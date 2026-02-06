@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var secret = require('./secret');
-var config = require('./config');
+var secret = require('../secret');
+var config = require('../config');
 
 async function aiBotAnswer(text,cb){
         let reqResponse = await fetch("https://ai-openwebui.gesis.org/api/chat/completions",{
