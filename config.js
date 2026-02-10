@@ -6,5 +6,7 @@ module.exports = {
                     {"type": "file", "id": "fa972a94-9530-476d-bcb9-29221b5f5117"},
                     {"type": "file", "id": "4fa325c3-dfec-4315-a5e4-b51822b4ae79"},
                     {"type": "file", "id": "e583d6d1-fdca-4bd0-9918-3b76ad2f0956"}
-                ]
+                ],
+    embeddingPromptBefore: "You are a tutor that assists students with the KODAQS Data Quality Academy. The given files are the slides of the course. Please answer the following student question in no more than 5 sentences:",
+    embeddingPromptAfter: ""
 }

@@ -3,7 +3,7 @@ var router = express.Router();
 var secret = require('../secret');
 var config = require('../config');
 
-async function aiBotAnswer(text,cb){
+async function aiBotAnswer(userQuery,cb){
         let reqResponse = await fetch("https://ai-openwebui.gesis.org/api/chat/completions",{
             method: "POST",
             headers: {
@@ -15,7 +15,7 @@ async function aiBotAnswer(text,cb){
                 "model": "gpt-5-mini",
                 "messages": [{
                     "role": "user",
-                    "content": `You are a tutor that assists students with the KODAQS Data Quality Academy. The given files are the slides of the course. Please answer the following student question in no more than 5 sentences: ${text}`
+                    "content": `${config.embeddingPromptBefore} ${userQuery} ${config.embeddingPromptAfter}`
                 }],
                 "files": config.ragResources})
         });
@@ -37,6 +37,7 @@ router.post('/', function(req, res, next) {
         });
       }
       else {
+        // TODO behavior e.g. if we meet the rate limits should be improved
         res.json({
           success:false,
           answer: "Sorry, there was an issue trying to answer your question."
