@@ -45,9 +45,12 @@
     .title{font-weight:600; margin-bottom:6px}
     .panel{flex:1; background:#e8f0ff; border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:10px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.6)}
 
+    .setup-popup{
+      padding:10px 12px; border-radius:10px; background:white; box-shadow:0 6px 18px rgba(33,48,59,0.04); font-size:15px; color:#17202b    }
+
     .response{min-height:68px; padding:10px 12px; border-radius:10px; background:white; box-shadow:0 6px 18px rgba(33,48,59,0.04); font-size:15px; color:#17202b}
 
-    .controls{display:flex; gap:8px; margin-top:8px}
+    .controls{display:flex; gap:8px; margin-top:8px; pointer-events: none;}
     input[type=text]{flex:1; padding:10px 12px; border-radius:10px; border:1px solid #e3e8f2; font-size:14px}
     button{padding:10px 14px; border-radius:10px; border:0; background:var(--accent); color:white; font-weight:600; cursor:pointer}
     button:active{transform:translateY(1px)}
@@ -81,6 +84,20 @@
     <div class="chat">
       <div class="title">Stell dem Kodachs eine Frage</div>
       <div class="panel">
+        <div class="setup-popup">
+          <p>To talk to the Kodachs Data Quality Consultant, please choose your identifier and accept the terms of use below.</p>
+          <form id="setupForm" >
+            <input id="tou" name="tou" type="checkbox"/>
+            <label for="tou">I have read and accept the terms of use</label>    
+            <p></p>    
+            <label for="userId">first letter of bla, last number of blub, ...</label>
+            <input name="userId" type="text"/>
+           
+            <p></p>          
+            
+          </form>
+           <button type="submit" onclick="onSetupFormSubmit()">OK</button>
+        </div>
         <div id="response" class="response">Hallo, ich bin dein Kodachs! Frag mich etwas und drücke Enter oder Senden.</div>
         <div class="controls">
           <input id="input" type="text" placeholder="Schreibe hier deine Frage..." aria-label="Eingabefeld für Frage" />
@@ -164,6 +181,51 @@
 
     send.addEventListener('click', handleSend);
     input.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') handleSend(); });
+
+
+    // study mgmt
+    function onSetupFormSubmit(e){
+      console.log('setup form submitted')
+      //e.preventDefault();
+      let agreedTou = document.querySelector("input[name='tou']").checked; 
+      let enteredUserId = document.querySelector("input[name='userId']").value; 
+
+      if (!agreedTou){
+        alert("You have enteredUserIdaccept the Terms of Use, in order to use the Kodachs Data Quality Consultant");
+      }
+      else if(""==enteredUserId){
+        alert("Please enter a valid identifier");
+      } else {        
+        signupCompleted(enteredUserId);
+      }
+    }
+
+    function signupCompleted(userId){
+      localStorage.setItem("kodachsUserId", userId);
+      makeKodachsAvailable();
+    }
+
+
+    // to be called either on setup completed, or after a reload when the userId is in localStorage
+    function makeKodachsAvailable(){
+      document.querySelector(".setup-popup").style.display="none";
+      document.querySelector(".controls").style.pointerEvents = "auto";  //enables the chat
+    }
+
+    addEventListener("DOMContentLoaded", (event) => { 
+      checkIfUserIsSetup();
+    });
+
+    function checkIfUserIsSetup(){
+      if(localStorage.getItem("kodachsUserId") === null){
+        // user not setup yet
+        console.log("user is not setup yet");
+      }
+      else {
+        console.log("user setup completed");
+        makeKodachsAvailable();
+      }
+    }
   </script>
 </body>
 </html>
