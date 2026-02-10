@@ -1,3 +1,3 @@
 * put your API key into secret.js
 * run `npm install` and `npm start` / or use `nodemon`
-* chat with the Kodachs at `http://localhost:3000/kodachs-web`
+* chat with the Kodachs at `http://localhost:3000`
