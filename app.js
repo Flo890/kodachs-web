@@ -7,8 +7,21 @@ var logger = require('morgan');
 var cors = require('cors');
 
 var kodachsWebRouter = require('./routes/kodachs-web');
+const { basicAuthHeader } = require('./secret');
 
 var app = express();
+
+let authMiddleware = function(req, res, next) {
+  
+    console.log(req.headers.authorization);
+    if (basicAuthHeader && req.headers.authorization != basicAuthHeader) {
+        res.statusCode = 401;
+        res.setHeader('WWW-Authenticate', 'Basic realm="MyRealmName"');
+        res.end('Unauthorized');
+    } else {
+        next();
+    }
+};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -18,7 +31,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use([authMiddleware,express.static(path.join(__dirname, 'public'))]);
 
 app.use(bodyParser.json());
 
@@ -43,5 +56,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+
 
 module.exports = app;
