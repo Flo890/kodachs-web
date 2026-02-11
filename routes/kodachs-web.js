@@ -2,8 +2,9 @@ var express = require('express');
 var router = express.Router();
 var secret = require('../secret');
 var config = require('../config');
+const { logPrompt, logResponse, logAiEvent } = require('../services/logging');
 
-async function aiBotAnswer(userQuery,cb){
+async function aiBotAnswer(userQuery, userId, cb){
         let reqResponse = await fetch("https://ai-openwebui.gesis.org/api/chat/completions",{
             method: "POST",
             headers: {
@@ -21,6 +22,7 @@ async function aiBotAnswer(userQuery,cb){
         });
         let data = await reqResponse.json();
         console.log(data);
+        logAiEvent(new Date(),userId,data);
         let resText = data.choices[0].message.content;
 
       cb(resText);
@@ -29,21 +31,30 @@ async function aiBotAnswer(userQuery,cb){
 /* GET home page. */
 router.post('/', function(req, res, next) {
   console.log(req.body);
-  let aiAnswer = aiBotAnswer(req.body.question, (aiAnswer)=> {
+
+  let userId = req.body.userId;
+  logPrompt(new Date(),userId,req.body.question);
+
+  let aiAnswer = aiBotAnswer(req.body.question, userId, (aiAnswer)=> {
     if(aiAnswer){
-        res.json({
-          success:true,
-          answer: aiAnswer
-        });
-      }
-      else {
-        // TODO behavior e.g. if we meet the rate limits should be improved
-        res.json({
-          success:false,
-          answer: "Sorry, there was an issue trying to answer your question."
-        })
-      }
+
+      logResponse(new Date(),userId,aiAnswer);
+
+      res.json({
+        success:true,
+        answer: aiAnswer
+      });
+    }
+    else {
+      // TODO behavior e.g. if we meet the rate limits should be improved
+      res.json({
+        success:false,
+        answer: "Sorry, there was an issue trying to answer your question."
+      })
+    }
   });
+
+
 
   
 });
