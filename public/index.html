@@ -17,6 +17,11 @@
 
     .app{max-width:95%; background:white; border-radius:14px; box-shadow:0 8px 30px rgba(33,48,59,0.08); padding:28px; display:flex; gap:28px; align-items:center}
 
+    .challenge-instruction-box{
+      position: absolute;
+      top:0;
+    }
+
     /* Dachs */
     .badger-wrap{width:240px; display:flex; flex-direction:column; align-items:center}
     .badger{
@@ -68,6 +73,11 @@
   </style>
 </head>
 <body>
+  <div class="challenge-instruction-box">
+    <h1>Can Your Project win the Kodachs Data Quality Award?</h1>
+    <p>Study task can go here, as reminder.</p>
+  </div>
+  
   <div class="app" role="application" aria-label="Dachs Chatbot Demo">
     <div class="badger-wrap">
       <div class="badger" id="badger">
@@ -192,7 +202,7 @@
       let enteredUserId = document.querySelector("input[name='userId']").value; 
 
       if (!agreedTou){
-        alert("You have enteredUserIdaccept the Terms of Use, in order to use the Kodachs Data Quality Consultant");
+        alert("You have to enter your userId and accept the Terms of Use, in order to use the Kodachs Data Quality Consultant");
       }
       else if(""==enteredUserId){
         alert("Please enter a valid identifier");
