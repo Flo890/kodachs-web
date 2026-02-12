@@ -40,7 +40,7 @@ function executeMagicSpells(query,userId){
   if (query == "obliviate") {
     // clear message history of this user
     messageHistoryDict[userId] = []
-    return "Vergessenszauber ausgeführt! Ich weiß von nichts mehr."
+    return "Forgetfulness spell cast! I don't remember anything anymore."
   }
   return undefined;
 }
@@ -74,7 +74,7 @@ async function aiBotAnswer(userQuery, userId, cb){
         cb(resText);
       } catch(e){
         console.error(e);
-        cb("Oups, jetzt hatte ich ein Problem. Was war nochmal deine Frage?")
+        cb("Oops, now I had a problem. What was your question again?")
       }
     }
 

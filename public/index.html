@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dachs-Chatbot (Demo)</title>
+  <title>Kodachs - Your Data Quality Consultant</title>
   <style>
     :root{
       --bg:#f3f6fb;
@@ -15,7 +15,7 @@
     *{box-sizing:border-box}
     body{font-family:Inter,ui-sans-serif,system-ui,"Helvetica Neue",Arial; margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--bg); color:#21303b}
 
-    .app{width:600px; max-width:95%; background:white; border-radius:14px; box-shadow:0 8px 30px rgba(33,48,59,0.08); padding:28px; display:flex; gap:28px; align-items:center}
+    .app{max-width:95%; background:white; border-radius:14px; box-shadow:0 8px 30px rgba(33,48,59,0.08); padding:28px; display:flex; gap:28px; align-items:center}
 
     /* Dachs */
     .badger-wrap{width:240px; display:flex; flex-direction:column; align-items:center}
@@ -82,7 +82,7 @@
     </div>
 
     <div class="chat">
-      <div class="title">Stell dem Kodachs eine Frage</div>
+      <div class="title">Ask The Kodachs A Question</div>
       <div class="panel">
         <div class="setup-popup">
           <p>To talk to the Kodachs Data Quality Consultant, please choose your anonymous identifier below and read and accept the <a href="/termsofuse.html" target="_blank">terms of use</a>.</p>
@@ -98,10 +98,10 @@
           </form>
            <button type="submit" onclick="onSetupFormSubmit()">OK</button>
         </div>
-        <div id="response" class="response">Hallo, ich bin dein Kodachs! Frag mich etwas und drücke Enter oder Senden.</div>
+        <div id="response" class="response">Hello, I am your Kodachs! Ask me something and press Enter or Send.</div>
         <div class="controls">
-          <input id="input" type="text" placeholder="Schreibe hier deine Frage..." aria-label="Eingabefeld für Frage" />
-          <button id="send">Senden</button>
+          <input id="input" type="text" placeholder="Type Your Question Here..." aria-label="Input for Your Question" />
+          <button id="send">Send</button>
         </div>
       </div>
     </div>
