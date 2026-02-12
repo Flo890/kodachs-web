@@ -4,7 +4,43 @@ var secret = require('../secret');
 var config = require('../config');
 const { logPrompt, logResponse, logAiEvent } = require('../services/logging');
 
+// stores the message history of each user's conversation (over system runtime only)
+const messageHistoryDict = {}
+
+// sample data to illustrate the format:
+//{"Flo":
+//  [{"who":"chatbot","what":"Hello","who":"user"},{"what":"How are you"}]
+//}
+
+function buildMessageHistory(userId){
+  if (!messageHistoryDict[userId]){
+    console.log(`no message history found for user ${userId}`)
+    return ""
+  }
+  
+  console.log(`Merging message history of user ${userId}`)
+ 
+  let messageHistoryTexts = messageHistoryDict[userId].map(obj => {
+    return `### ${obj.who}: ### ${obj.what} ###, `
+  })
+  let res = messageHistoryTexts.reduce((a,b) => a+b,"### This is the message history of this conversation: ###")
+  console.log(res)
+  return res;
+}
+
+function addToMessageHistory(userId,text,who){
+  if (!messageHistoryDict[userId]){
+    messageHistoryDict[userId] = []
+  }
+
+  messageHistoryDict[userId].push({"who":who,"what":text})
+}
+
 async function aiBotAnswer(userQuery, userId, cb){
+
+  let messageHistory = buildMessageHistory(userId);
+  addToMessageHistory(userId,userQuery,"user")
+
         let reqResponse = await fetch("https://ai-openwebui.gesis.org/api/chat/completions",{
             method: "POST",
             headers: {
@@ -16,7 +52,7 @@ async function aiBotAnswer(userQuery, userId, cb){
                 "model": "gpt-5-mini",
                 "messages": [{
                     "role": "user",
-                    "content": `${config.embeddingPromptBefore} ${userQuery} ${config.embeddingPromptAfter}`
+                    "content": `${config.embeddingPromptBefore} ${userQuery} ${config.embeddingPromptAfter} ${messageHistory}`
                 }],
                 "files": config.ragResources})
         });
@@ -34,11 +70,12 @@ router.post('/', function(req, res, next) {
 
   let userId = req.body.userId;
   logPrompt(new Date(),userId,req.body.question);
-
+  
   let aiAnswer = aiBotAnswer(req.body.question, userId, (aiAnswer)=> {
     if(aiAnswer){
 
       logResponse(new Date(),userId,aiAnswer);
+      addToMessageHistory(userId,aiAnswer,"chatbot")
 
       res.json({
         success:true,
