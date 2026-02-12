@@ -47,30 +47,35 @@ function executeMagicSpells(query,userId){
 
 async function aiBotAnswer(userQuery, userId, cb){
 
-  let messageHistory = buildMessageHistory(userId);
-  addToMessageHistory(userId,userQuery,"user")
+  try {
+    let messageHistory = buildMessageHistory(userId);
+    addToMessageHistory(userId,userQuery,"user")
 
-        let reqResponse = await fetch("https://ai-openwebui.gesis.org/api/chat/completions",{
-            method: "POST",
-            headers: {
-                "Content-Type":"application/json",
-                "Authorization":`Bearer ${secret.gesisApiKey}`
-            },
-            // TODO outsource the below embedding prompt to some file
-            body: JSON.stringify({
-                "model": "gpt-5-mini",
-                "messages": [{
-                    "role": "user",
-                    "content": `${config.embeddingPromptBefore} ${userQuery} ${config.embeddingPromptAfter} ${messageHistory}`
-                }],
-                "files": config.ragResources})
-        });
-        let data = await reqResponse.json();
-        console.log(data);
-        logAiEvent(new Date(),userId,data);
-        let resText = data.choices[0].message.content;
+          let reqResponse = await fetch("https://ai-openwebui.gesis.org/api/chat/completions",{
+              method: "POST",
+              headers: {
+                  "Content-Type":"application/json",
+                  "Authorization":`Bearer ${secret.gesisApiKey}`
+              },
+              // TODO outsource the below embedding prompt to some file
+              body: JSON.stringify({
+                  "model": "gpt-5-mini",
+                  "messages": [{
+                      "role": "user",
+                      "content": `${config.embeddingPromptBefore} ${userQuery} ${config.embeddingPromptAfter} ${messageHistory}`
+                  }],
+                  "files": config.ragResources})
+          });
+          let data = await reqResponse.json();
+          console.log(data);
+          logAiEvent(new Date(),userId,data);
+          let resText = data.choices[0].message.content;
 
-      cb(resText);
+        cb(resText);
+      } catch(e){
+        console.error(e);
+        cb("Oups, jetzt hatte ich ein Problem. Was war nochmal deine Frage?")
+      }
     }
 
 /* GET home page. */
@@ -83,8 +88,7 @@ router.post('/', function(req, res, next) {
   let magicRes = executeMagicSpells(req.body.question,userId);
   if (magicRes){
     logResponse(new Date(),userId,magicRes);
-      addToMessageHistory(userId,magicRes,"chatbot")
-
+     
       res.json({
         success:true,
         answer: magicRes
