@@ -36,6 +36,15 @@ function addToMessageHistory(userId,text,who){
   messageHistoryDict[userId].push({"who":who,"what":text})
 }
 
+function executeMagicSpells(query,userId){
+  if (query == "obliviate") {
+    // clear message history of this user
+    messageHistoryDict[userId] = []
+    return "Vergessenszauber ausgeführt! Ich weiß von nichts mehr."
+  }
+  return undefined;
+}
+
 async function aiBotAnswer(userQuery, userId, cb){
 
   let messageHistory = buildMessageHistory(userId);
@@ -70,6 +79,17 @@ router.post('/', function(req, res, next) {
 
   let userId = req.body.userId;
   logPrompt(new Date(),userId,req.body.question);
+
+  let magicRes = executeMagicSpells(req.body.question,userId);
+  if (magicRes){
+    logResponse(new Date(),userId,magicRes);
+      addToMessageHistory(userId,magicRes,"chatbot")
+
+      res.json({
+        success:true,
+        answer: magicRes
+      });
+  }
   
   let aiAnswer = aiBotAnswer(req.body.question, userId, (aiAnswer)=> {
     if(aiAnswer){
