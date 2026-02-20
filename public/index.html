@@ -72,10 +72,9 @@
     @keyframes dot{0%{opacity:.2; transform:translateY(0)}50%{opacity:1; transform:translateY(-6px)}100%{opacity:.2; transform:translateY(0)}}
   
     .debug-inputs{
-      position: fixed;
-      bottom: 20px;
-      left: 5%;
       width: 90%;
+      position:relative;
+      clear:both;
     }
   </style>
 </head>
@@ -124,7 +123,7 @@
     </div>
   </div>
 
-  <div class="debug-inputs">
+   <div class="debug-inputs">
     <p><b>prompt structure:</b></p>
     <p>some instructions before the user's query:</p>
     <textarea style="width:100%" id="prompt-structure-input-1" rows="5">You are a tutor that assists students with the KODAQS Data Quality Academy. The given files are the slides of the course. Please answer the following student question in no more than 5 sentences:</textarea>
@@ -132,7 +131,19 @@
     <p>some instructions after the user's query could go here</p>
     <textarea style="width:100%" id="prompt-structure-input-2" rows="5"></textarea>
     <p><b><i>The chat's message history will be added here</i></b></p>
+
+    <p>RAG ids, that the model should consider (files need to be uploaded to the used API account before!):</p>
+    <textarea id="ragRefs" style="width:100%", rows="10">
+      [
+                    {"type": "file", "id": "e1bac6a7-2cf2-42e5-bdf2-65f80f2f5998"},
+                    {"type": "file", "id": "d0b0e241-2f0b-40c1-a4af-4fb061493cec"},
+                    {"type": "file", "id": "da10aa97-c5e7-4e26-aeb7-5ab871db661e"},
+                    {"type": "file", "id": "fa972a94-9530-476d-bcb9-29221b5f5117"},
+                    {"type": "file", "id": "4fa325c3-dfec-4315-a5e4-b51822b4ae79"},
+                    {"type": "file", "id": "e583d6d1-fdca-4bd0-9918-3b76ad2f0956"}
+                ]</textarea>
   </div>
+  
   
   <script>
     const input = document.getElementById('input');
@@ -161,17 +172,23 @@
         console.log(promptStructure1);
         let promptStructure2 = document.getElementById("prompt-structure-input-2").value;
         console.log(promptStructure2);
+        let ragRefs = document.getElementById("ragRefs").value;
+        console.log(ragRefs);
 
-        let reqResponse = await fetch("/query",{
+        let postReqBody = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({                
                     "question": text,
                     "userId": localStorage.getItem("kodachsUserId"),
                     "promptStructure1": promptStructure1,
-                    "promptStructure2": promptStructure2
+                    "promptStructure2": promptStructure2,
+                    "ragRefs": ragRefs
                 })
-        });
+        };
+        console.log(postReqBody);
+
+        let reqResponse = await fetch("/query",postReqBody);
         let data = await reqResponse.json();
         console.log(data);
         let resText = data.answer;

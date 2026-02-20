@@ -45,7 +45,7 @@ function executeMagicSpells(query,userId){
   return undefined;
 }
 
-async function aiBotAnswer(userQuery, userId, promptStructure1,promptStructure2, cb){
+async function aiBotAnswer(userQuery, userId, promptStructure1,promptStructure2, ragRefs, cb){
 
   try {
     let messageHistory = buildMessageHistory(userId);
@@ -56,6 +56,8 @@ async function aiBotAnswer(userQuery, userId, promptStructure1,promptStructure2,
     ${userQuery} 
     ${promptStructure2 ? promptStructure2 : config.embeddingPromptAfter} 
     ${messageHistory}`
+
+    let dynamicRagRefs = ragRefs ? JSON.parse(ragRefs) : config.ragResources;
 
 
           let reqResponse = await fetch("https://ai-openwebui.gesis.org/api/chat/completions",{
@@ -71,7 +73,7 @@ async function aiBotAnswer(userQuery, userId, promptStructure1,promptStructure2,
                       "role": "user",
                       "content": dynamicPrompt
                   }],
-                  "files": config.ragResources})
+                  "files": dynamicRagRefs})
           });
           let data = await reqResponse.json();
           console.log(data);
@@ -94,6 +96,7 @@ router.post('/', function(req, res, next) {
 
   let promptStructure1 = req.body.promptStructure1;
   let promptStructure2 = req.body.promptStructure2;
+  let ragRefs = req.body.ragRefs;
 
   let magicRes = executeMagicSpells(req.body.question,userId);
   if (magicRes){
@@ -105,7 +108,7 @@ router.post('/', function(req, res, next) {
       });
   }
   
-  let aiAnswer = aiBotAnswer(req.body.question, userId, promptStructure1, promptStructure2, (aiAnswer)=> {
+  let aiAnswer = aiBotAnswer(req.body.question, userId, promptStructure1, promptStructure2, ragRefs, (aiAnswer)=> {
     if(aiAnswer){
 
       logResponse(new Date(),userId,aiAnswer);
