@@ -70,6 +70,13 @@
     .dot:nth-child(2){animation-delay:0.15s}
     .dot:nth-child(3){animation-delay:0.3s}
     @keyframes dot{0%{opacity:.2; transform:translateY(0)}50%{opacity:1; transform:translateY(-6px)}100%{opacity:.2; transform:translateY(0)}}
+  
+    .debug-inputs{
+      position: fixed;
+      bottom: 20px;
+      left: 5%;
+      width: 90%;
+    }
   </style>
 </head>
 <body>
@@ -117,6 +124,16 @@
     </div>
   </div>
 
+  <div class="debug-inputs">
+    <p><b>prompt structure:</b></p>
+    <p>some instructions before the user's query:</p>
+    <textarea style="width:100%" id="prompt-structure-input-1" rows="5">You are a tutor that assists students with the KODAQS Data Quality Academy. The given files are the slides of the course. Please answer the following student question in no more than 5 sentences:</textarea>
+    <p><b><i>the user's query will be inserted here</i></b></p>
+    <p>some instructions after the user's query could go here</p>
+    <textarea style="width:100%" id="prompt-structure-input-2" rows="5"></textarea>
+    <p><b><i>The chat's message history will be added here</i></b></p>
+  </div>
+  
   <script>
     const input = document.getElementById('input');
     const send = document.getElementById('send');
@@ -139,12 +156,20 @@
      * Call mediated through our server middleware
      */
     async function aiMiddlewareAnswer(text){
+
+        let promptStructure1 = document.getElementById("prompt-structure-input-1").value;
+        console.log(promptStructure1);
+        let promptStructure2 = document.getElementById("prompt-structure-input-2").value;
+        console.log(promptStructure2);
+
         let reqResponse = await fetch("/query",{
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({                
                     "question": text,
-                    "userId": localStorage.getItem("kodachsUserId")
+                    "userId": localStorage.getItem("kodachsUserId"),
+                    "promptStructure1": promptStructure1,
+                    "promptStructure2": promptStructure2
                 })
         });
         let data = await reqResponse.json();
@@ -152,8 +177,8 @@
         let resText = data.answer;
         response.textContent = resText;
         input.value = '';
-      input.disabled = false; send.disabled = false; input.focus();
-      setTypingState(false);
+       input.disabled = false; send.disabled = false; input.focus();
+       setTypingState(false);
         return resText;
     }
 

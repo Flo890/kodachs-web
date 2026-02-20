@@ -45,11 +45,18 @@ function executeMagicSpells(query,userId){
   return undefined;
 }
 
-async function aiBotAnswer(userQuery, userId, cb){
+async function aiBotAnswer(userQuery, userId, promptStructure1,promptStructure2, cb){
 
   try {
     let messageHistory = buildMessageHistory(userId);
     addToMessageHistory(userId,userQuery,"user")
+
+    let dynamicPrompt = `
+    ${promptStructure1 ? promptStructure1 : config.embeddingPromptBefore} 
+    ${userQuery} 
+    ${promptStructure2 ? promptStructure2 : config.embeddingPromptAfter} 
+    ${messageHistory}`
+
 
           let reqResponse = await fetch("https://ai-openwebui.gesis.org/api/chat/completions",{
               method: "POST",
@@ -62,7 +69,7 @@ async function aiBotAnswer(userQuery, userId, cb){
                   "model": "gpt-5-mini",
                   "messages": [{
                       "role": "user",
-                      "content": `${config.embeddingPromptBefore} ${userQuery} ${config.embeddingPromptAfter} ${messageHistory}`
+                      "content": dynamicPrompt
                   }],
                   "files": config.ragResources})
           });
@@ -85,6 +92,9 @@ router.post('/', function(req, res, next) {
   let userId = req.body.userId;
   logPrompt(new Date(),userId,req.body.question);
 
+  let promptStructure1 = req.body.promptStructure1;
+  let promptStructure2 = req.body.promptStructure2;
+
   let magicRes = executeMagicSpells(req.body.question,userId);
   if (magicRes){
     logResponse(new Date(),userId,magicRes);
@@ -95,7 +105,7 @@ router.post('/', function(req, res, next) {
       });
   }
   
-  let aiAnswer = aiBotAnswer(req.body.question, userId, (aiAnswer)=> {
+  let aiAnswer = aiBotAnswer(req.body.question, userId, promptStructure1, promptStructure2, (aiAnswer)=> {
     if(aiAnswer){
 
       logResponse(new Date(),userId,aiAnswer);
