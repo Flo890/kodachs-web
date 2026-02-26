@@ -106,7 +106,7 @@
             <input id="tou" name="tou" type="checkbox"/>
             <label for="tou">I have read and accept the terms of use</label>    
             <p></p>    
-            <label for="userId">First two letters of mother's first name, Day of your birth (two digits), Last two digits of your phone number</label>
+            <label for="userId">First two letters of mother's first name, Day of your birth (two digits), First two letters of your birth city, Last two digits of your phone number</label>
             <input name="userId" type="text"/>
            
             <p></p>          
@@ -248,6 +248,8 @@
       }
       else if(""==enteredUserId){
         alert("Please enter a valid identifier");
+      } else if(!idPatternIsValid(enteredUserId)) {
+        alert("Your identifier does not match the instructions. Please check again.");
       } else {        
         signupCompleted(enteredUserId);
       }
@@ -256,6 +258,11 @@
     function signupCompleted(userId){
       localStorage.setItem("kodachsUserId", userId);
       makeKodachsAvailable();
+    }
+
+    function idPatternIsValid(enteredId){
+      const pattern = /\w\w\d\d\w\w\d\d/mi;
+      return pattern.test(enteredId);
     }
 
 
