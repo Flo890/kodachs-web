@@ -68,7 +68,7 @@ async function aiBotAnswer(userQuery, userId, promptStructure1,promptStructure2,
               },
               // TODO outsource the below embedding prompt to some file
               body: JSON.stringify({
-                  "model": "gpt-5-mini",
+                  "model": "gpt-5-mini-kodaqs1",
                   "messages": [{
                       "role": "user",
                       "content": dynamicPrompt
