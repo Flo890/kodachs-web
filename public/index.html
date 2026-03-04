@@ -124,21 +124,7 @@
     </div>
   </div>
 
-   <div class="debug-inputs">
-    <p><b>prompt structure:</b></p>
-    <p>some instructions before the user's query:</p>
-    <textarea style="width:100%" id="prompt-structure-input-1" rows="5">You are a tutor that assists students with the KODAQS Data Quality Academy. The given files are the slides of the course. Please answer the following student question in no more than 5 sentences:</textarea>
-    <p><b><i>the user's query will be inserted here</i></b></p>
-    <p>some instructions after the user's query could go here</p>
-    <textarea style="width:100%" id="prompt-structure-input-2" rows="5"></textarea>
-    <p><b><i>The chat's message history will be added here</i></b></p>
-
-    <p>RAG ids, that the model should consider (files need to be uploaded to the used API account before!):</p>
-    <textarea id="ragRefs" style="width:100%", rows="10">
-     []
-    </textarea>
-  </div>
-  
+     
   
   <script>
     const input = document.getElementById('input');
@@ -163,22 +149,12 @@
      */
     async function aiMiddlewareAnswer(text){
 
-        let promptStructure1 = document.getElementById("prompt-structure-input-1").value;
-        console.log(promptStructure1);
-        let promptStructure2 = document.getElementById("prompt-structure-input-2").value;
-        console.log(promptStructure2);
-        let ragRefs = document.getElementById("ragRefs").value;
-        console.log(ragRefs);
-
         let postReqBody = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({                
                     "question": text,
-                    "userId": localStorage.getItem("kodachsUserId"),
-                    "promptStructure1": promptStructure1,
-                    "promptStructure2": promptStructure2,
-                    "ragRefs": ragRefs
+                    "userId": localStorage.getItem("kodachsUserId")                   
                 })
         };
         console.log(postReqBody);
