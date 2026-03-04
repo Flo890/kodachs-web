@@ -107,7 +107,7 @@
             <input id="tou" name="tou" type="checkbox"/>
             <label for="tou">I have read and accept the terms of use</label>    
             <p></p>    
-            <label for="userId">First two letters of mother's first name, Day of your birth (two digits), First two letters of your birth city, Last two digits of your phone number</label>
+            <label for="userId"><b>Please enter your personal id: </b>First two letters of mother's first name, Day of your birth (two digits), First two letters of your birth city, Last two digits of your phone number</label>
             <input name="userId" type="text"/>
            
             <p></p>          
@@ -133,6 +133,8 @@
     const mouth = document.getElementById('mouth');
     const tokenInput = document.getElementById('tokenInput');
 
+    let userId_global = localStorage.getItem("kodachsUserId");
+
     function setTypingState(on){
       if(on){
         response.innerHTML = '<div class="typing-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';
@@ -149,12 +151,14 @@
      */
     async function aiMiddlewareAnswer(text){
 
+      let kUId = localStorage.getItem("kodachsUserId") !== null ? localStorage.getItem("kodachsUserId") : userId_global;
+
         let postReqBody = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({                
                     "question": text,
-                    "userId": localStorage.getItem("kodachsUserId")                   
+                    "userId": kUId                   
                 })
         };
         console.log(postReqBody);
@@ -232,9 +236,10 @@
     }
 
     function idPatternIsValid(enteredId){
-      const pattern = /\w\w\d\d\w\w\d\d/mi;
+      const pattern = /[a-zA-Zäßüö][a-zA-Zäßüö]\d\d[a-zA-Zäßüö][a-zA-Zäßüö]\d\d/mi;
       return pattern.test(enteredId);
     }
+    
 
 
     // to be called either on setup completed, or after a reload when the userId is in localStorage

@@ -83,7 +83,7 @@ async function aiBotAnswer(userQuery, userId, cb){
         cb(resText);
       } catch(e){
         console.error(e);
-        cb("Oops, now I had a problem. What was your question again?")
+        cb("Oops, now I had a problem. Please give me a minute, and then ask your question again.")
       }
     }
 
