@@ -167,6 +167,7 @@
         let data = await reqResponse.json();
         console.log(data);
         let resText = data.answer;
+        resText = removeReferences(resText);
         response.textContent = resText;
         input.value = '';
        input.disabled = false; send.disabled = false; input.focus();
@@ -240,6 +241,10 @@
       return pattern.test(enteredId);
     }
     
+    function removeReferences(text){
+      const pattern = /(\s?\[\d+\])/mig;
+      return text.replaceAll(pattern,"");
+    }
 
 
     // to be called either on setup completed, or after a reload when the userId is in localStorage
