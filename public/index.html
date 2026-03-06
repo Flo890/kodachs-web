@@ -14,12 +14,12 @@
       --muted:#6c7080;
     }
     *{box-sizing:border-box}
-    body{font-family:Inter,ui-sans-serif,system-ui,"Helvetica Neue",Arial; margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--bg); color:#21303b}
+    body{font-family:Inter,ui-sans-serif,system-ui,"Helvetica Neue",Arial; margin:0;justify-content:center; background:var(--bg); color:#21303b}
 
     .app{max-width:95%; background:white; border-radius:14px; box-shadow:0 8px 30px rgba(33,48,59,0.08); padding:28px; display:flex; gap:28px; align-items:center}
 
     .challenge-instruction-box{
-      position: absolute;
+      position: relative;
       top:0;
     }
 
@@ -82,10 +82,13 @@
 <body>
   <div class="challenge-instruction-box">
     <h1>What About The Data Quality Of Your Project?</h1>
-    <p>Being aware of data quality issues that are present in the given dataset or introduced during the processing workflow is important. But not easy! The KoDachs Data Quality Consultant will help you caring about your project's data quality. It knows about common workflows to assess data quality, metrics to identify data quality flaws, and can help you mitigate the issues that you have discovered.</p>
-  </div>
+         <p>Being aware of data quality issues that are present in the given dataset or introduced during the processing workflow is important. But not easy! The KoDachs Data Quality Consultant will help you caring about your project's data quality. It knows about common workflows to assess data quality, metrics to identify data quality flaws, and can help you mitigate the issues that you have discovered.</p>
+
   
-  <div class="app" role="application" aria-label="Dachs Chatbot Demo">
+
+      </div>
+
+         <div class="app" role="application" aria-label="Dachs Chatbot Demo">
     <div class="badger-wrap">
       <div class="badger" id="badger">
         <div class="stripe left"></div>
@@ -97,6 +100,8 @@
       </div>
       <div style="margin-top:12px; text-align:center; color:var(--muted); font-size:13px">KoDachs</div>
     </div>
+
+
 
     <div class="chat">
       <div class="title">Ask The KoDachs A Question</div>
@@ -122,7 +127,10 @@
         </div>
       </div>
     </div>
+
+    
   </div>
+
 
      
   
